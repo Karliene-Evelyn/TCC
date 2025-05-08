@@ -2,14 +2,12 @@ import streamlit as st
 import requests
 import os
 from datetime import datetime
-import xarray as xr
-import matplotlib.pyplot as plt
 import tempfile
 
 # Configuração da página
 st.set_page_config(page_title="DataWeath - GFS Downloader", layout="wide")
-st.title("🌎 DataWeath - GFS Downloader & Visualizador")
-st.write("Facilite sua vida acadêmica baixando e visualizando dados do GFS! ☁️")
+st.title("🌎 DataWeath - GFS Downloader e Viewer")
+st.write("Facilite sua vida acadêmica baixando e visualizando dados do GFS!")
 
 # ===== ENTRADAS DO USUÁRIO =====
 st.sidebar.header("📅 Parâmetros do GFS")
@@ -28,6 +26,10 @@ url_completa = f"{base_url}/{ano}/{ano}{mes}{dia}/{arquivo}"
 
 st.subheader("🔗 Link gerado")
 st.code(url_completa, language='bash')
+
+# ===== LINK WGET =====
+st.subheader("📥 Use o comando wget para baixar:")
+st.code(f"wget {url_completa}", language='bash')
 
 # ===== FUNÇÃO DE DOWNLOAD =====
 def download_file(url):
@@ -55,43 +57,5 @@ if st.button("⬇️ Baixar o Arquivo GFS"):
     path_file = download_file(url_completa)
     if path_file:
         st.success(f"Arquivo baixado com sucesso: {path_file}")
-
-        # Exibindo detalhes do Dataset
-        try:
-            ds = xr.open_dataset(path_file, engine="cfgrib")
-            
-            # Mostrando o conteúdo do Dataset
-            with st.expander("🔎 Detalhes do Dataset"):
-                st.text(ds)
-
-            # Opções de variáveis
-            variavel = st.selectbox("Escolha a variável para visualizar", list(ds.data_vars))
-
-            st.subheader("🗺️ Visualização da Variável")
-            
-            # Verificando se a variável tem tempo
-            if "time" in ds[variavel].dims:
-                ds[variavel].isel(time=0).plot(cmap="viridis")
-            else:
-                ds[variavel].plot(cmap="viridis")
-
-            st.pyplot(plt.gcf())
-
-            # Exibindo o código para o usuário
-            with st.expander("📜 Ver código Python + Markdown"):
-                st.markdown(f"""
-```python
-import xarray as xr
-import matplotlib.pyplot as plt
-
-# Abrindo o GRIB2
-ds = xr.open_dataset("{path_file}", engine="cfgrib")
-
-# Visualizando a variável
-ds["{variavel}"].isel(time=0).plot(cmap="viridis")
-plt.show()
-""")
-        except Exception as e:
-            st.error(f"Erro ao abrir o arquivo: {e}")
     else:
         st.warning("Não foi possível baixar o arquivo.")
