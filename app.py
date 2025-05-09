@@ -14,7 +14,7 @@ st.sidebar.header("📅 Parâmetros do GFS")
 data = st.sidebar.date_input("Data da previsão", datetime(2024, 1, 1), help="Data da análise do modelo GFS")
 hora = st.sidebar.selectbox("Hora da análise (UTC)", ["00", "06", "12", "18"], help="Hora de início da análise do GFS")
 previsao = st.sidebar.selectbox("Horas à frente (previsão)", ["f000", "f006", "f012", "f024", "f048", "f072", "f096", "f120", "f168", "f240"], help="Tempo de previsão a ser baixado")
-resolucao = st.sidebar.radio("Resolução", ["0p25", "1p0"], help="Resolução espacial do modelo (0.25° ou 1.0°)")
+resolucao = st.sidebar.radio("Resolução", ["0p25"], help="Resolução espacial do modelo (Apenas 0.25°)")
 
 # ===== LINK DE DOWNLOAD =====
 ano = data.strftime("%Y")
