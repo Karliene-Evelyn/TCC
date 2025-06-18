@@ -3,3 +3,4 @@ requests
 xarray
 matplotlib
 cfgrib
+plotly
